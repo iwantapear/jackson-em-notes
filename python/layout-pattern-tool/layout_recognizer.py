@@ -5,13 +5,30 @@ Layout Pattern Recognizer Module
 Core module for recognizing geometric features from patterns
 """
 
-import cv2
 import numpy as np
 from typing import List, Dict, Tuple, Optional, Any
 from dataclasses import dataclass
-from shapely.geometry import Polygon, box
-from scipy import ndimage
-from scipy.signal import find_peaks
+
+# Optional imports for image processing
+try:
+    import cv2
+    HAS_CV2 = True
+except ImportError:
+    HAS_CV2 = False
+    print("Warning: OpenCV not installed. Image loading functionality will be limited.")
+
+try:
+    from shapely.geometry import Polygon, box
+    HAS_SHAPELY = True
+except ImportError:
+    HAS_SHAPELY = False
+
+try:
+    from scipy import ndimage
+    from scipy.signal import find_peaks
+    HAS_SCIPY = True
+except ImportError:
+    HAS_SCIPY = False
 
 
 @dataclass
@@ -83,6 +100,9 @@ class LayoutRecognizer:
         Returns:
             加载的图像数组 / Loaded image array
         """
+        if not HAS_CV2:
+            raise ImportError("OpenCV (cv2) is required for image loading. Install with: pip install opencv-python")
+        
         self.image = cv2.imread(image_path)
         if self.image is None:
             raise ValueError(f"无法加载图像: {image_path} / Cannot load image: {image_path}")
@@ -102,6 +122,9 @@ class LayoutRecognizer:
         Returns:
             检测到的几何特征列表 / List of detected geometric features
         """
+        if not HAS_CV2:
+            raise ImportError("OpenCV (cv2) is required for feature detection. Install with: pip install opencv-python")
+        
         if image is not None:
             self.processed_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) if len(image.shape) == 3 else image
         
@@ -130,6 +153,9 @@ class LayoutRecognizer:
         分析轮廓并识别形状
         Analyze contour and identify shape
         """
+        if not HAS_CV2:
+            return None
+            
         # Approximate contour to polygon
         epsilon = 0.02 * cv2.arcLength(contour, True)
         approx = cv2.approxPolyDP(contour, epsilon, True)
@@ -344,14 +370,18 @@ class LayoutRecognizer:
             if x_gaps:
                 params.gap_x = min([g for g in x_gaps if g > 0], default=None)
                 params.pitch_x = np.mean(x_gaps) if x_gaps else None
-                print(f"检测到的X方向间距 / Detected X gap: {params.gap_x:.2f if params.gap_x else 'N/A'}")
-                print(f"检测到的X方向pitch / Detected X pitch: {params.pitch_x:.2f if params.pitch_x else 'N/A'}")
+                gap_x_str = f"{params.gap_x:.2f}" if params.gap_x else "N/A"
+                pitch_x_str = f"{params.pitch_x:.2f}" if params.pitch_x else "N/A"
+                print(f"检测到的X方向间距 / Detected X gap: {gap_x_str}")
+                print(f"检测到的X方向pitch / Detected X pitch: {pitch_x_str}")
             
             if y_gaps:
                 params.gap_y = min([g for g in y_gaps if g > 0], default=None)
                 params.pitch_y = np.mean(y_gaps) if y_gaps else None
-                print(f"检测到的Y方向间距 / Detected Y gap: {params.gap_y:.2f if params.gap_y else 'N/A'}")
-                print(f"检测到的Y方向pitch / Detected Y pitch: {params.pitch_y:.2f if params.pitch_y else 'N/A'}")
+                gap_y_str = f"{params.gap_y:.2f}" if params.gap_y else "N/A"
+                pitch_y_str = f"{params.pitch_y:.2f}" if params.pitch_y else "N/A"
+                print(f"检测到的Y方向间距 / Detected Y gap: {gap_y_str}")
+                print(f"检测到的Y方向pitch / Detected Y pitch: {pitch_y_str}")
         
         # CD (Critical Dimension) - typically minimum feature size
         if features:

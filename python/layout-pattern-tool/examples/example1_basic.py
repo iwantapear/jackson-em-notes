@@ -100,7 +100,8 @@ def main():
         features[:1],  # 只使用第一个特征作为单元
         params,
         repeat_x=3,
-        repeat_y=3
+        repeat_y=3,
+        cell_name="PERIODIC_LAYOUT"  # Use different cell name
     )
     
     # 生成OAS文件

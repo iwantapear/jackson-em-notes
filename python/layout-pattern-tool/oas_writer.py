@@ -6,7 +6,11 @@ OAS format file generation module
 """
 
 from typing import List, Optional
-from .layout_recognizer import GeometricFeature, LayoutParameters
+
+try:
+    from .layout_recognizer import GeometricFeature, LayoutParameters
+except ImportError:
+    from layout_recognizer import GeometricFeature, LayoutParameters
 
 
 class OASWriter:

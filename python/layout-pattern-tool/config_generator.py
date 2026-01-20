@@ -8,7 +8,11 @@ Configuration file generation module
 import yaml
 import json
 from typing import List, Dict, Any
-from .layout_recognizer import GeometricFeature, LayoutParameters, PeriodicityInfo
+
+try:
+    from .layout_recognizer import GeometricFeature, LayoutParameters, PeriodicityInfo
+except ImportError:
+    from layout_recognizer import GeometricFeature, LayoutParameters, PeriodicityInfo
 
 
 class PatchConfigGenerator:

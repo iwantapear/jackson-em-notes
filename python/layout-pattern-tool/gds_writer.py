@@ -7,7 +7,11 @@ GDS format file generation module
 
 import gdspy
 from typing import List, Optional
-from .layout_recognizer import GeometricFeature, LayoutParameters
+
+try:
+    from .layout_recognizer import GeometricFeature, LayoutParameters
+except ImportError:
+    from layout_recognizer import GeometricFeature, LayoutParameters
 
 
 class GDSWriter:
@@ -40,8 +44,8 @@ class GDSWriter:
             params: 版图参数 / Layout parameters
             cell_name: 单元名称 / Cell name
         """
-        # Create library
-        lib = gdspy.GdsLibrary()
+        # Create library with unit and precision
+        lib = gdspy.GdsLibrary(unit=self.unit, precision=self.precision)
         
         # Create cell
         cell = lib.new_cell(cell_name)
@@ -61,7 +65,7 @@ class GDSWriter:
             cell.add(polygon)
         
         # Write to file
-        lib.write_gds(filename, unit=self.unit, precision=self.precision)
+        lib.write_gds(filename)
         print(f"GDS文件已保存到: {filename} / GDS file saved to: {filename}")
     
     def write_with_periodicity(self, filename: str, features: List[GeometricFeature],
@@ -80,7 +84,7 @@ class GDSWriter:
             repeat_y: Y方向重复次数 / Y-direction repeat count
             cell_name: 单元名称 / Cell name
         """
-        lib = gdspy.GdsLibrary()
+        lib = gdspy.GdsLibrary(unit=self.unit, precision=self.precision)
         
         # Create unit cell
         unit_cell = lib.new_cell(cell_name + "_UNIT")
@@ -108,7 +112,7 @@ class GDSWriter:
                 )
                 main_cell.add(ref)
         
-        lib.write_gds(filename, unit=self.unit, precision=self.precision)
+        lib.write_gds(filename)
         print(f"带周期性的GDS文件已保存到: {filename} / Periodic GDS file saved to: {filename}")
         print(f"重复次数: X={repeat_x}, Y={repeat_y} / Repeat count: X={repeat_x}, Y={repeat_y}")
     
