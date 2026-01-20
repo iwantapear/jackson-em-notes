@@ -1,1 +1,32 @@
 .DS_Store
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Generated layout files
+*.gds
+*.oas
+*.oas.txt
+*.cw
+*_patch.yaml
+*_gauge.cw
+*_extension.yaml
+
+# Temporary files
+*.tmp
+.cache/

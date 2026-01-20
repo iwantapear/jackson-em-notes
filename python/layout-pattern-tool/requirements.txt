@@ -1,0 +1,22 @@
+# Image processing and computer vision
+opencv-python>=4.8.0
+scikit-image>=0.21.0
+numpy>=1.24.0
+Pillow>=10.0.0
+
+# Geometric operations
+shapely>=2.0.0
+
+# GDS/OAS file generation
+gdspy>=1.6.13
+klayout>=0.28.0
+
+# Configuration files
+PyYAML>=6.0.0
+
+# Interactive GUI (optional)
+tkinter-tooltip>=2.0.0
+
+# Data analysis
+scipy>=1.11.0
+matplotlib>=3.7.0
