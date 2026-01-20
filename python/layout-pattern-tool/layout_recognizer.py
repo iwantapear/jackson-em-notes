@@ -83,8 +83,12 @@ class LayoutRecognizer:
         
         Args:
             config: 配置参数字典 / Configuration dictionary
+                   - threshold: 二值化阈值 / Binary threshold (default: 127)
+                   - min_area: 最小轮廓面积 / Minimum contour area (default: 100)
         """
         self.config = config or {}
+        self.threshold = self.config.get('threshold', 127)
+        self.min_contour_area = self.config.get('min_area', 100)
         self.image = None
         self.processed_image = None
         self.features: List[GeometricFeature] = []
@@ -131,15 +135,16 @@ class LayoutRecognizer:
         if self.processed_image is None:
             raise ValueError("没有可用的图像进行处理 / No image available for processing")
         
-        # Apply threshold to get binary image
-        _, binary = cv2.threshold(self.processed_image, 127, 255, cv2.THRESH_BINARY)
+        # Apply threshold to get binary image (configurable threshold)
+        _, binary = cv2.threshold(self.processed_image, self.threshold, 255, cv2.THRESH_BINARY)
         
         # Find contours
         contours, _ = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         
         self.features = []
         for contour in contours:
-            if cv2.contourArea(contour) < 100:  # Filter small noise
+            # Filter small noise (configurable minimum area)
+            if cv2.contourArea(contour) < self.min_contour_area:
                 continue
             
             feature = self._analyze_contour(contour)
