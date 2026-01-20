@@ -13,4 +13,5 @@ This repository is a collection of my effort to fill *every* missing derivation 
 * `go`: misc go code for field potential/line renderings, and various other computations
 * `octave`: misc octave code for graphs, etc
 * `python`: misc python code for computations.
+  * **NEW**: `python/layout-pattern-tool`: Layout pattern recognition and GDS/OAS generation tool - A comprehensive tool for identifying geometric features from patterns and converting them to semiconductor layout files. [Learn more →](python/layout-pattern-tool/README.md)
 
